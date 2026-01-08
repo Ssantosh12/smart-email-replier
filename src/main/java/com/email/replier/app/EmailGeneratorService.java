@@ -36,14 +36,27 @@ public class EmailGeneratorService {
                 }
         );
 
-        // Do request and get response
+        // Validate configuration
+        if (geminiApiUrl == null || geminiApiUrl.isBlank()) {
+            throw new IllegalStateException("Missing configuration: gemini.api.url");
+        }
+        if (geminiApiKey == null || geminiApiKey.isBlank()) {
+            throw new IllegalStateException("Missing configuration: gemini.api.key");
+        }
+
+        // Do request and get response. Send API key as Authorization header (Bearer).
         String response = webClient.post()
-                .uri(geminiApiUrl + geminiApiKey)
+                .uri(geminiApiUrl)
                 .header("Content-Type","application/json")
+                .header("Authorization", "Bearer " + geminiApiKey)
                 .bodyValue(requestBody)
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
+
+        if (response == null) {
+            throw new IllegalStateException("Empty response from Gemini API");
+        }
 
         // Extract Response and Return
         return extractResponseContent(response);
@@ -53,21 +66,25 @@ public class EmailGeneratorService {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(response);
-            return rootNode.path("candidates")
-                    .get(0)
-                    .path("content")
-                    .path("parts")
-                    .get(0)
-                    .path("text")
-                    .asText();
+            JsonNode candidates = rootNode.path("candidates");
+            if (!candidates.isArray() || candidates.size() == 0) {
+                throw new IllegalStateException("No candidates field in API response");
+            }
+            JsonNode first = candidates.get(0);
+            JsonNode textNode = first.path("content").path("parts").get(0).path("text");
+            if (textNode.isMissingNode()) {
+                throw new IllegalStateException("No text part in API response");
+            }
+            return textNode.asText();
         } catch (Exception e) {
-            return "Error processing request: " + e.getMessage();
+            // Bubble up as runtime exception so controller can return 500 with clear message
+            throw new RuntimeException("Error processing API response: " + e.getMessage(), e);
         }
     }
 
     private String buildPrompt(EmailRequest emailRequest) {
         StringBuilder prompt = new StringBuilder();
-        prompt.append("Generate a professional email reply for hte following email content. Please don't generate a subject line ");
+        prompt.append("Generate a professional email reply for the following email content. Please don't generate a subject line.");
         if (emailRequest.getTone() != null && !emailRequest.getTone().isEmpty()) {
             prompt.append("Use a ").append(emailRequest.getTone()).append(" tone.");
         }
