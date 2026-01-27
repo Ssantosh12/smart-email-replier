@@ -44,11 +44,11 @@ public class EmailGeneratorService {
             throw new IllegalStateException("Missing configuration: gemini.api.key");
         }
 
-        // Do request and get response. Send API key as Authorization header (Bearer).
+        // Do request and get response. Send API key as X-goog-api-key header (Gemini format).
         String response = webClient.post()
                 .uri(geminiApiUrl)
                 .header("Content-Type","application/json")
-                .header("Authorization", "Bearer " + geminiApiKey)
+                .header("X-goog-api-key", geminiApiKey)
                 .bodyValue(requestBody)
                 .retrieve()
                 .bodyToMono(String.class)
