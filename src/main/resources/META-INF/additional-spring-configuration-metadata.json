@@ -1,0 +1,16 @@
+{
+  "properties": [
+    {
+      "name": "gemini.api.url",
+      "type": "java.lang.String",
+      "description": "Gemini API endpoint URL. Can be set via GEMINI_API_URL environment variable.",
+      "sourceType": "com.email.replier.app.EmailGeneratorService"
+    },
+    {
+      "name": "gemini.api.key",
+      "type": "java.lang.String",
+      "description": "Gemini API authentication key. Can be set via GEMINI_API_KEY environment variable.",
+      "sourceType": "com.email.replier.app.EmailGeneratorService"
+    }
+  ]
+}
