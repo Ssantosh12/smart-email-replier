@@ -1,5 +1,4 @@
-
-package com.email.replier.app;
+package com.email.replier.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

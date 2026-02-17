@@ -1,6 +1,7 @@
+package com.email.replier.controller;
 
-package com.email.replier.app;
-
+import com.email.replier.dto.EmailRequest;
+import com.email.replier.service.EmailGeneratorService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
