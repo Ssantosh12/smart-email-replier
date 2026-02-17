@@ -1,6 +1,7 @@
 package com.email.replier.controller;
 
-import com.email.replier.dto.EmailRequest;
+import com.email.replier.dto.GenerateEmailRequestDTO;
+import com.email.replier.dto.GenerateEmailResponseDTO;
 import com.email.replier.service.EmailGeneratorService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +19,10 @@ public class EmailGeneratorController {
     private final EmailGeneratorService emailGeneratorService;
 
     @PostMapping("/generate")
-    public ResponseEntity<String> generateEmail(@RequestBody @Valid EmailRequest emailRequest) {
+    public ResponseEntity<GenerateEmailResponseDTO> generateEmail(@RequestBody @Valid GenerateEmailRequestDTO emailRequest) {
         String response = emailGeneratorService.generateEmailReply(emailRequest);
-        return ResponseEntity.ok(response);
+        GenerateEmailResponseDTO responseDTO = new GenerateEmailResponseDTO();
+        responseDTO.setGeneratedEmail(response);
+        return ResponseEntity.ok(responseDTO);
     }
 }

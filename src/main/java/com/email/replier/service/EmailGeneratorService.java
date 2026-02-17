@@ -1,7 +1,7 @@
 package com.email.replier.service;
 
 import com.email.replier.client.GeminiClient;
-import com.email.replier.dto.EmailRequest;
+import com.email.replier.dto.GenerateEmailRequestDTO;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,7 +13,7 @@ public class EmailGeneratorService {
         this.geminiClient = geminiClient;
     }
 
-    public String generateEmailReply(EmailRequest emailRequest) {
+    public String generateEmailReply(GenerateEmailRequestDTO emailRequest) {
         // Build the prompt
         String prompt = buildPrompt(emailRequest);
 
@@ -21,7 +21,7 @@ public class EmailGeneratorService {
         return geminiClient.generateContent(prompt);
     }
 
-    private String buildPrompt(EmailRequest emailRequest) {
+    private String buildPrompt(GenerateEmailRequestDTO emailRequest) {
         StringBuilder prompt = new StringBuilder();
         prompt.append("Generate a professional email reply for the following email content. Please don't generate a subject line.");
         if (emailRequest.getTone() != null && !emailRequest.getTone().isEmpty()) {
