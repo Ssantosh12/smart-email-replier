@@ -1,24 +1,40 @@
 package com.email.replier.service;
 
-import com.email.replier.client.GeminiClient;
+import com.email.replier.client.AiClient;
 import com.email.replier.dto.EmailRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EmailGeneratorService {
 
-    private final GeminiClient geminiClient;
+    private static final Logger logger = LoggerFactory.getLogger(EmailGeneratorService.class);
 
-    public EmailGeneratorService(GeminiClient geminiClient) {
-        this.geminiClient = geminiClient;
+    private final AiClient aiClient;
+
+    public EmailGeneratorService(AiClient aiClient) {
+        this.aiClient = aiClient;
     }
 
     public String generateEmailReply(EmailRequest emailRequest) {
+        long startTime = System.currentTimeMillis();
+        logger.info("Incoming request to generate email reply");
+
         // Build the prompt
         String prompt = buildPrompt(emailRequest);
 
-        // Call Gemini API
-        return geminiClient.generateContent(prompt);
+        try {
+            // Call AI Service
+            String response = aiClient.generateContent(prompt);
+            long executionTime = System.currentTimeMillis() - startTime;
+            logger.info("Email reply generated successfully. Execution time: {} ms", executionTime);
+            return response;
+        } catch (Exception e) {
+            long executionTime = System.currentTimeMillis() - startTime;
+            logger.error("Error generating email reply. Execution time: {} ms. Error: {}", executionTime, e.getMessage());
+            throw e;
+        }
     }
 
     private String buildPrompt(EmailRequest emailRequest) {
