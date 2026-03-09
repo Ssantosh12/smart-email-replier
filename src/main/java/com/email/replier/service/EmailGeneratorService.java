@@ -1,6 +1,6 @@
 package com.email.replier.service;
 
-import com.email.replier.client.GeminiClient;
+import com.email.replier.client.AiClient;
 import com.email.replier.dto.EmailRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,10 +11,10 @@ public class EmailGeneratorService {
 
     private static final Logger logger = LoggerFactory.getLogger(EmailGeneratorService.class);
 
-    private final GeminiClient geminiClient;
+    private final AiClient aiClient;
 
-    public EmailGeneratorService(GeminiClient geminiClient) {
-        this.geminiClient = geminiClient;
+    public EmailGeneratorService(AiClient aiClient) {
+        this.aiClient = aiClient;
     }
 
     public String generateEmailReply(EmailRequest emailRequest) {
@@ -25,8 +25,8 @@ public class EmailGeneratorService {
         String prompt = buildPrompt(emailRequest);
 
         try {
-            // Call Gemini API
-            String response = geminiClient.generateContent(prompt);
+            // Call AI Service
+            String response = aiClient.generateContent(prompt);
             long executionTime = System.currentTimeMillis() - startTime;
             logger.info("Email reply generated successfully. Execution time: {} ms", executionTime);
             return response;

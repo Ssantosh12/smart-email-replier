@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.Map;
 
 @Component
-public class GeminiClient {
+public class GeminiClient implements AiClient {
 
     private static final Logger logger = LoggerFactory.getLogger(GeminiClient.class);
 
