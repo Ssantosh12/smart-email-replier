@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/email")
+@RequestMapping({"/api/v1/email", "/api/email"})
 @AllArgsConstructor
 @Validated
 @CrossOrigin(origins = "*")
