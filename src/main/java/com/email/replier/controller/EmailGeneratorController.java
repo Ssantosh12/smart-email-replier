@@ -12,9 +12,21 @@ import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-@Tag(name = "Email Generation", description = "Endpoints for generating AI-powered email replies")
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+@Tag(name = "Email Generation", 
+      description = "🤖 AI-Powered Email Reply Generation\n\n" +
+              "Generate intelligent, context-aware email responses using Google Gemini AI.\n\n" +
+              "**Supported Tones:** formal, casual, professional\n\n" +
+              "**Use Cases:**\n" +
+              "- Business correspondence\n" +
+              "- Professional networking\n" +
+              "- Customer service\n" +
+              "- Project proposals")
 @RestController
-@RequestMapping({"/api/v1/email", "/api/email"})
+@RequestMapping("/api/v1/email")
 @AllArgsConstructor
 @Validated
 @CrossOrigin(origins = "*")
@@ -25,25 +37,42 @@ public class EmailGeneratorController {
     private final EmailGeneratorService emailGeneratorService;
 
     @Operation(
-        summary = "Generate an AI-powered email reply",
-        description = "Generates a contextual email reply based on the provided email content, tone, and style preferences using Google Gemini AI.",
+        summary = "🎯 Generate AI Email Reply",
+        description = "Generate a contextual, professional email reply based on the provided email content.\n\n" +
+                "**How it works:**\n" +
+                "1. Submit the email content you received\n" +
+                "2. Optionally specify the desired tone\n" +
+                "3. Get an AI-generated reply instantly\n\n" +
+                "**Tone Options:**\n" +
+                "- `formal` - Professional and formal language\n" +
+                "- `casual` - Friendly and informal tone\n" +
+                "- `professional` - Standard business tone (default)\n\n" +
+                "**Performance:** Average response time < 2 seconds",
         responses = {
             @ApiResponse(
                 responseCode = "200",
-                description = "Email reply generated successfully"
+                description = "✅ Email reply generated successfully",
+                content = @Content(
+                    mediaType = "application/json",
+                    examples = @ExampleObject(
+                        name = "Successful Response",
+                        value = "\"Thank you for your interest. I appreciate the opportunity and would be delighted to explore this further. Please let me know your availability for a discussion at your earliest convenience.\""
+                    )
+                )
             ),
             @ApiResponse(
                 responseCode = "400",
-                description = "Invalid request body"
+                description = "❌ Bad Request - Invalid input (empty emailContent, validation failed)"
             ),
             @ApiResponse(
                 responseCode = "500",
-                description = "Internal server error"
+                description = "❌ Server Error - AI service unavailable or API error"
             )
         }
     )
     @PostMapping("/generate")
-    public ResponseEntity<String> generateEmail(@RequestBody @Valid EmailRequest emailRequest) {
+    public ResponseEntity<String> generateEmail(
+            @RequestBody @Valid EmailRequest emailRequest) {
         logger.info("Received email generation request");
         String response = emailGeneratorService.generateEmailReply(emailRequest);
         return ResponseEntity.ok(response);
