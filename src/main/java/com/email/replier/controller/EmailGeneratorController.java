@@ -9,23 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-@OpenAPIDefinition(
-    info = @Info(
-        title = "Email Replier API",
-        version = "1.0.0",
-        description = "AI-powered email reply generation API powered by Google Gemini. Generate context-aware email responses instantly.",
-        contact = @Contact(
-            name = "Email Replier Project"
-        )
-    )
-)
-@Tag(name = "Email Generation", description = "Endpoints for generating AI-powered email replies")@RestController
+@Tag(name = "Email Generation", description = "Endpoints for generating AI-powered email replies")
+@RestController
 @RequestMapping({"/api/v1/email", "/api/email"})
 @AllArgsConstructor
 @Validated
